@@ -231,6 +231,7 @@ class MainView(tkinter.Frame):
                 self.compare_v.set('校验失败')
         else:
             self.compare_v.set('计算完毕')
+        self.compare_v.set(self.compare_v.get() + f'，文件大小：{count*2}Kb')
 
     def hash_test(self):
         """此函数为测试hashlib函数"""
