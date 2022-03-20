@@ -204,12 +204,14 @@ class MainView(tkinter.Frame):
         # 将字符串转换为命令执行
         hasher = eval('hashlib.' + way + '()')
         self.compare_v.set('正在计算')
-        count = 0
+        # count = 0
+        file_length = 0
 
         with open(self.path_entry.get('1.0', 'end')[:-1], 'rb') as file:
             for data in iter(lambda: file.read(2048), b''):
                 hasher.update(data)
-                count += 1
+                # count += 1
+                file_length += len(data)
             # for data in file.read(2048):
             #     if data:
             #         hasher.update(data.encode('utf-8'))
@@ -217,7 +219,7 @@ class MainView(tkinter.Frame):
             #     else:
             #         break
         result = hasher.hexdigest()
-        print(count)
+        # print(count)
 
         self.my_hash['state'] = 'normal'
         self.my_hash.delete('1.0', 'end')
@@ -231,7 +233,16 @@ class MainView(tkinter.Frame):
                 self.compare_v.set('校验失败')
         else:
             self.compare_v.set('计算完毕')
-        self.compare_v.set(self.compare_v.get() + f'，文件大小：{count*2}Kb')
+        file_size_str = ''
+        if file_length < 1024:
+            file_size_str = str(file_length) + 'B'
+        elif file_length < 1024 * 1024:
+            file_size_str = str(round(file_length / 1024, 2)) + 'KB'
+        elif file_length < 1024 * 1024 * 1024:
+            file_size_str = str(round(file_length / 1024 / 1024, 2)) + 'MB'
+        else:
+            file_size_str = str(round(file_length / 1024 / 1024 / 1024, 2)) + 'GB'
+        self.compare_v.set(self.compare_v.get() + f'，文件大小：{file_size_str}')
 
     def hash_test(self):
         """此函数为测试hashlib函数"""
